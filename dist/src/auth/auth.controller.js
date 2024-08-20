@@ -16,14 +16,21 @@ exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
 const register_user_dto_1 = require("./dto/register-user.dto");
 const auth_service_1 = require("./auth.service");
+const login_user_dto_1 = require("./dto/login-user.dto");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
     register(registerUserDto) {
-        console.log('register api');
-        console.log(registerUserDto);
         return this.authService.register(registerUserDto);
+    }
+    login(loginUserDto) {
+        return this.authService.login(loginUserDto);
+    }
+    refreshToken({ refresh_token }) {
+        console.log('refresh token api');
+        refresh_token;
+        return this.authService.refreshToken(refresh_token);
     }
 };
 exports.AuthController = AuthController;
@@ -34,6 +41,21 @@ __decorate([
     __metadata("design:paramtypes", [register_user_dto_1.RegisterUserDto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "register", null);
+__decorate([
+    (0, common_1.Post)('login'),
+    (0, common_1.UsePipes)(common_1.ValidationPipe),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [login_user_dto_1.LoginUserDto]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "login", null);
+__decorate([
+    (0, common_1.Post)('refresh-token'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "refreshToken", null);
 exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService])
