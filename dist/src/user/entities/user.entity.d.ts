@@ -4,5 +4,8 @@ export declare class User {
     lastName: string;
     email: string;
     password: string;
+    refresh_token: string;
     satus: number;
+    createdAt: Date;
+    updatedAt: Date;
 }
