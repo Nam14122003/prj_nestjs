@@ -5,7 +5,7 @@ export declare class User {
     email: string;
     password: string;
     refresh_token: string;
-    satus: number;
+    status: number;
     createdAt: Date;
     updatedAt: Date;
 }
