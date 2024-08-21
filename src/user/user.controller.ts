@@ -1,17 +1,20 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './entities/user.entity';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { query } from 'express';
+import { FillterUserDto } from './dto/fillter-user.dto';
 
 @Controller('users')
 export class UserController {
     constructor(private userService: UserService){}
     @UseGuards(AuthGuard)
     @Get()
-    findAll():Promise<User[]> {
-        return this.userService.findAll();
+    findAll(@Query() query: FillterUserDto):Promise<User[]> {
+        console.log(query);
+        return this.userService.findAll(query);
     }
 
     @UseGuards(AuthGuard)
