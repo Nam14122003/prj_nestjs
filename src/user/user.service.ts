@@ -18,9 +18,9 @@ export class UserService {
         const skip = (page - 1) * itemsPerPage;
         const[res, total] = await this.userRespository.findAndCount({
             where: [
-                {firstName: Like('%' + query.search + '%')},
-                {lastName: Like('%' + query.search + '%')},
-                {email: Like('%' + query.search + '%')},
+                {firstName: Like('%' + keyword + '%')},
+                {lastName: Like('%' + keyword + '%')},
+                {email: Like('%' + keyword + '%')},
             ],
             order: {createdAt: "DESC"},
             take: itemsPerPage,

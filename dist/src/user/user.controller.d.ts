@@ -2,10 +2,11 @@ import { UserService } from './user.service';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { FillterUserDto } from './dto/fillter-user.dto';
 export declare class UserController {
     private userService;
     constructor(userService: UserService);
-    findAll(): Promise<User[]>;
+    findAll(query: FillterUserDto): Promise<User[]>;
     findOne(id: string): Promise<User>;
     create(createUserDto: CreateUserDto): Promise<User>;
     update(id: string, updateUserDto: UpdateUserDto): Promise<import("typeorm").UpdateResult>;

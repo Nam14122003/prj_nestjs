@@ -6,14 +6,19 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { query } from 'express';
 import { FillterUserDto } from './dto/fillter-user.dto';
+import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 
+@ApiBearerAuth()
+@ApiTags('Users')
 @Controller('users')
 export class UserController {
     constructor(private userService: UserService){}
     @UseGuards(AuthGuard)
+    @ApiQuery({name:'page'})
+    @ApiQuery({name:'itemsPerPage'})
+    @ApiQuery({name:'search'})
     @Get()
     findAll(@Query() query: FillterUserDto):Promise<User[]> {
-        console.log(query);
         return this.userService.findAll(query);
     }
 

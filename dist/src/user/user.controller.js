@@ -18,12 +18,14 @@ const user_service_1 = require("./user.service");
 const auth_guard_1 = require("../auth/auth.guard");
 const create_user_dto_1 = require("./dto/create-user.dto");
 const update_user_dto_1 = require("./dto/update-user.dto");
+const fillter_user_dto_1 = require("./dto/fillter-user.dto");
+const swagger_1 = require("@nestjs/swagger");
 let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
     }
-    findAll() {
-        return this.userService.findAll();
+    findAll(query) {
+        return this.userService.findAll(query);
     }
     findOne(id) {
         return this.userService.findOne(Number(id));
@@ -41,9 +43,13 @@ let UserController = class UserController {
 exports.UserController = UserController;
 __decorate([
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    (0, swagger_1.ApiQuery)({ name: 'page' }),
+    (0, swagger_1.ApiQuery)({ name: 'itemsPerPage' }),
+    (0, swagger_1.ApiQuery)({ name: 'search' }),
     (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [fillter_user_dto_1.FillterUserDto]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "findAll", null);
 __decorate([
@@ -79,6 +85,8 @@ __decorate([
     __metadata("design:returntype", void 0)
 ], UserController.prototype, "delete", null);
 exports.UserController = UserController = __decorate([
+    (0, swagger_1.ApiBearerAuth)(),
+    (0, swagger_1.ApiTags)('Users'),
     (0, common_1.Controller)('users'),
     __metadata("design:paramtypes", [user_service_1.UserService])
 ], UserController);
