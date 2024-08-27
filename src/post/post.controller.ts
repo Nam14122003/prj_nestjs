@@ -8,13 +8,27 @@ import { PostService } from './post.service';
 import { FilterPostDto } from './dto/filter-post.dto';
 import { Post as PostEntity} from "./entities/post.entity"
 import { UpdatePostDto } from './dto/update-post.dto';
-
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+@ApiBearerAuth()
+@ApiTags('Posts')
 @Controller('posts')
 export class PostController {
     constructor(private postService: PostService){}
     @UseGuards(AuthGuard)
     @UsePipes(ValidationPipe)
     @Post()
+    @ApiConsumes('multipart/form-data')
+    @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        },
+      }
+    },
+    })
     @UseInterceptors(FileInterceptor('thumbnail', {
         storage:storageConfig('post'),
         fileFilter:(req, file, cb) => {

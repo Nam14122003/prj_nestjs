@@ -11,8 +11,6 @@ export class AuthController {
     constructor(private authService: AuthService){}
     @Post('register')
     register(@Body() registerUserDto: RegisterUserDto):Promise<User> {
-        // console.log('register api');
-        // console.log(registerUserDto);
         return this.authService.register(registerUserDto);
     }
 
@@ -21,8 +19,6 @@ export class AuthController {
     @ApiResponse({status:401, description:'Login faild!!'})
     @UsePipes(ValidationPipe)
     login(@Body() loginUserDto: LoginUserDto):Promise<any> {
-        // console.log('login api');
-        // console.log(loginUserDto);
         return this.authService.login(loginUserDto);
     }
 

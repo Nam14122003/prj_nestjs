@@ -6,7 +6,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FillterUserDto } from './dto/fillter-user.dto';
-import { cursorTo } from 'readline';
+
 
 @Injectable()
 export class UserService {

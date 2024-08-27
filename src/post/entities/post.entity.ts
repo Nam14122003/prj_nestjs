@@ -1,3 +1,4 @@
+import { Category } from "src/category/entities/category.entity";
 import { User } from "src/user/entities/user.entity";
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
 
@@ -12,6 +13,7 @@ export class Post {
     @Column() 
     description: string;
 
+    
     @Column()
     thumbnail: string;
 
@@ -26,4 +28,7 @@ export class Post {
 
     @ManyToOne(() => User, (user) => user.posts)
     user: User
+
+    @ManyToOne(() => Category, (category) => category.posts)
+    category: Category
 }
