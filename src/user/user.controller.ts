@@ -5,7 +5,7 @@ import { AuthGuard } from 'src/auth/auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FillterUserDto } from './dto/fillter-user.dto';
-import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { storageConfig } from 'helpers/config';
 import { extname } from 'path';
@@ -47,6 +47,18 @@ export class UserController {
         return this.userService.delete(Number(id));
     }
 
+    @ApiConsumes('multipart/form-data')
+    @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'string',
+          format: 'binary',
+        }
+      }
+    },
+    })
     @Post('upload-avatar')
     @UseGuards(AuthGuard)
     @UseInterceptors(FileInterceptor('avatar', {

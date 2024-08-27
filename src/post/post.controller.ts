@@ -9,6 +9,7 @@ import { FilterPostDto } from './dto/filter-post.dto';
 import { Post as PostEntity} from "./entities/post.entity"
 import { UpdatePostDto } from './dto/update-post.dto';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { title } from 'process';
 @ApiBearerAuth()
 @ApiTags('Posts')
 @Controller('posts')
@@ -22,10 +23,13 @@ export class PostController {
     schema: {
       type: 'object',
       properties: {
+        title: {type: 'string'},
+        description: {type: 'string'},
         file: {
           type: 'string',
           format: 'binary',
         },
+        status: {type: 'number'}
       }
     },
     })
