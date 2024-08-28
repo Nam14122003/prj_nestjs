@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Put, Query, Req, UploadedFile, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UploadedFile, UseGuards, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { storageConfig } from 'helpers/config';
@@ -61,7 +61,6 @@ export class PostController {
         if(!file) {
             throw new BadRequestException('File is required!')
         }
-
         return this.postService.create(req['user_data'].id, {...createPostDto, thumbnail:file.destination + '/' + file.filename});
     }
 
@@ -78,7 +77,7 @@ export class PostController {
     }
 
     @UseGuards(AuthGuard)
-    @Put(':id')
+    @Patch(':id')
     @UseInterceptors(FileInterceptor('thumbnail', {
         storage:storageConfig('post'),
         fileFilter:(req, file, cb) => {
