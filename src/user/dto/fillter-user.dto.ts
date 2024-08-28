@@ -1,8 +1,10 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsOptional } from "class-validator";
 
 export class FillterUserDto {
+    @ApiProperty()
     page: string;
+
+    @ApiProperty()
     itemsPerPage: string;
 
     @ApiProperty({required: false})
