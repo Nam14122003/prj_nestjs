@@ -9,7 +9,6 @@ import { FilterPostDto } from './dto/filter-post.dto';
 import { Post as PostEntity} from "./entities/post.entity"
 import { UpdatePostDto } from './dto/update-post.dto';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { title } from 'process';
 @ApiBearerAuth()
 @ApiTags('Posts')
 @Controller('posts')
@@ -77,6 +76,7 @@ export class PostController {
     }
 
     @UseGuards(AuthGuard)
+    
     @Patch(':id')
     @UseInterceptors(FileInterceptor('thumbnail', {
         storage:storageConfig('post'),
@@ -104,7 +104,7 @@ export class PostController {
             throw new BadRequestException(req.fileValidationError);
         }
         if(file) {
-            updatePostDto.thumbnail = file.destination + '/' + file.filename;
+            updatePostDto.thumbnail =  + 'post/' + file.filename;
         }
 
         return this.postService.update(Number(id), updatePostDto);
@@ -114,5 +114,36 @@ export class PostController {
     @Delete(':id')
     delete(@Param('id') id: string) {
         return this.postService.delete(Number(id));
+    }
+
+
+    // Upload image in description
+    @Post('cke-upload')
+    @UseInterceptors(FileInterceptor('upload', {
+        storage:storageConfig('ckeditor'),
+        fileFilter:(req, file, cb) => {
+            const ext = extname(file.originalname);
+            const allowedExtArr = ['.jpg', '.png', '.jpeg'];
+            if(!allowedExtArr.includes(ext)) {
+                req.fileValidationError = `Wrong extension type. Acept file ext are: ${allowedExtArr.toString()}`;
+                cb(null, false);
+            }
+            else {
+                const fileSize = parseInt(req.headers['content-length']);
+                if(fileSize > 1024 * 1024 * 5) {
+                    req.fileValidationError = 'File size is too large. Acept fize size is lass than 5 MB';;
+                    cb(null, false);
+                }
+                else {
+                    cb(null, true);
+                }
+            }
+        }
+    }))
+
+    ckeUpload(@Body() data: any, @UploadedFile() file: Express.Multer.File) {
+        return {
+            'url':`ckeditor/${file.filename}`
+        }
     }
 }

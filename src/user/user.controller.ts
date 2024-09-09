@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, Patch, Post, Query, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, ParseArrayPipe, Patch, Post, Query, Req, SetMetadata, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { UserService } from './user.service';
 import { User } from './entities/user.entity';
 import { AuthGuard } from 'src/auth/auth.guard';
@@ -9,13 +9,15 @@ import { ApiBearerAuth, ApiBody, ApiConsumes, ApiQuery, ApiTags } from '@nestjs/
 import { FileInterceptor } from '@nestjs/platform-express';
 import { storageConfig } from 'helpers/config';
 import { extname } from 'path';
+import { Roles } from 'src/auth/decorator/role.decorator';
 
 @ApiBearerAuth()
 @ApiTags('Users')
 @Controller('users')
 export class UserController {
     constructor(private userService: UserService){}
-    @UseGuards(AuthGuard)
+
+    @Roles('Admin')
     @ApiQuery({name:'page'})
     @ApiQuery({name:'itemsPerPage'})
     @ApiQuery({name:'search'})
@@ -24,24 +26,37 @@ export class UserController {
         return this.userService.findAll(query);
     }
 
-    @UseGuards(AuthGuard)
+    @Get('profile')
+    profile(@Req() req: any): Promise<User> {
+        return this.userService.findOne(Number(req.user_data.id))
+    }
+
     @Get(':id')
     findOne(@Param('id') id: string): Promise<User> {
         return this.userService.findOne(Number(id));
     }
 
-    @UseGuards(AuthGuard)
+    // @SetMetadata('roles', ['Admin'])
+    @Roles('Admin')
     @Post('register')
     create(@Body() createUserDto: CreateUserDto): Promise<User> {
         return this.userService.create(createUserDto);
     }
 
+    @Roles('Admin')
     @Patch(':id')
     update(@Param('id') id:string, @Body() updateUserDto: UpdateUserDto) {
         return this.userService.update(Number(id), updateUserDto);
     }
 
-    @UseGuards(AuthGuard)
+    @Roles('Admin')
+    @Delete('multiple')
+    multipleDelete(@Query('ids', new ParseArrayPipe({items: String, separator: ','})) ids: string[]) {
+        console.log("delete multi=> ",ids);
+        return this.userService.mutipleDelete(ids)
+    }
+
+    @Roles('Admin')
     @Delete(':id')
     delete(@Param('id') id: string) {
         return this.userService.delete(Number(id));
@@ -60,7 +75,6 @@ export class UserController {
     },
     })
     @Post('upload-avatar')
-    @UseGuards(AuthGuard)
     @UseInterceptors(FileInterceptor('avatar', {
         storage: storageConfig('avatar'), 
         fileFilter:(req, file, cb) => {
@@ -89,6 +103,6 @@ export class UserController {
         if(!file) {
             throw new BadRequestException('File is required!')
         }
-        this.userService.updateAvatar(req.user_data.id, file.destination+'/'+file.fieldname);
+        this.userService.updateAvatar(req.user_data.id, file.fieldname+'/'+file.fieldname);
     }
 }
